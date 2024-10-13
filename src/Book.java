@@ -2,7 +2,7 @@ import java.util.ArrayList;
 
 public class Book {
 
-    private int thisId;
+    private final int thisId;
     private String title;
     private String author;
     private int year;
@@ -63,14 +63,6 @@ public class Book {
         price = bookPrice;
     }
 
-    public int getId() {
-        return thisId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
     public void getFullInfo() {
         System.out.println("\nBook[" + thisId + "] \"" + title + "\":");
         if (author != null) System.out.println("Author - " + author);
@@ -94,7 +86,4 @@ public class Book {
 
 
     }
-//    private void toString {
-//
-//    }
 }

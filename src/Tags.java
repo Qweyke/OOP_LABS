@@ -12,5 +12,5 @@ public class Tags {
     public static final String TAG_AWARD = "<award>";
     public static final String TAG_LANG = "<language>";
     public static final String TAG_CLOSE = "</[a-zA-Z]+>";
-    public static final String TAG_HEADER = "<\\?.+\\?>";
+    public static final String TAG_HEADER = "<\\?.+\\?>\\s.";
 }
