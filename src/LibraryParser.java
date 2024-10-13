@@ -12,17 +12,19 @@ public class LibraryParser {
 
     private short currentBookId;
     ArrayList<Book> libraryBooks;
-    private static final String TAG_BOOK = "book\\s+id=\"(\\d+)\"";
-    private static final String TAG_LIBRARY = "/library";
-    private static final String TAG_TITLE = "title";
-    private static final String TAG_AUTHOR = "author";
-    private static final String TAG_YEAR = "year";
-    private static final String TAG_GENRE = "genre";
-    private static final String TAG_PRICE = "price\\s+currency=\"([A-Z]+)\"";
-    private static final String TAG_ISBN = "isbn";
-    private static final String TAG_AWARDS = "awards";
-    private static final String TAG_AWARD = "award";
-    private static final String TAG_LANG = "language";
+    private static final String TAG_BOOK = "<book\\s+id=\"(\\d+)\">";
+    private static final String TAG_LIBRARY = "library";
+    private static final String TAG_TITLE = "<title>";
+    private static final String TAG_AUTHOR = "<author>";
+    private static final String TAG_YEAR = "<year>";
+    private static final String TAG_GENRE = "<genre>";
+    private static final String TAG_PRICE = "<price\\s+currency=\"([A-Z]+)\">";
+    private static final String TAG_ISBN = "<isbn>";
+    private static final String TAG_AWARDS = "<awards>";
+    private static final String TAG_AWARD = "<award>";
+    private static final String TAG_LANG = "<language>";
+    private static final String TAG_CLOSE = "</[a-zA-Z]+>";
+    private static final String TAG_HEADER = "<\\?.+\\?>";
 
     public LibraryParser(String fileName) {
         try {
@@ -42,23 +44,20 @@ public class LibraryParser {
         try {
             while ((symbol = libReader.read()) != -1) {
 
-                output.append(Character.toString(symbol));
-
-                if (output.toString().equals("<?")) {
-                    do symbol = (char) libReader.read(); while (symbol != '\n');
-                    output.setLength(0);
-                }
-
                 if (symbol == '<') {
-                    do {
-                        symbol = (char) libReader.read();
-                        output.append(symbol);
-                    } while (symbol != '>');
+
+                    while (symbol != '>') {
+                        output.append((char) symbol);
+                        symbol = libReader.read();
+                    }
+                    output.append((char) symbol);
 
                     String tag = output.toString();
+                    System.out.println(tag);
                     output.setLength(0);
                     switch (tag) {
                         case TAG_LIBRARY:
+                            System.out.println("Library exists");
                         case TAG_TITLE:
                         case TAG_AUTHOR:
                         case TAG_YEAR:
@@ -68,6 +67,9 @@ public class LibraryParser {
                         case TAG_AWARDS:
                         case TAG_AWARD:
                         case TAG_LANG:
+                            
+                            break;
+
                         default:
                             if (Pattern.matches(TAG_BOOK, tag)) {
                                 Matcher matcher = Pattern.compile(TAG_BOOK).matcher(tag);
@@ -79,11 +81,16 @@ public class LibraryParser {
                                 Matcher matcher = Pattern.compile(TAG_PRICE).matcher(tag);
                                 if (matcher.find()) {
                                     short bookPos = (short) (currentBookId - 1);
-                                    libraryBooks.get(bookPos).setPriceCurrency(matcher.group(1));
+                                    if (bookPos >= 0)
+                                        libraryBooks.get(bookPos).setPriceCurrency(matcher.group(1));
+                                    else System.out.println("No books in library");
                                 }
+                            } else if (Pattern.matches(TAG_CLOSE, tag) || Pattern.matches(TAG_HEADER, tag)) {
+                                System.out.println("Closing tag found");
                             } else {
                                 System.out.println("Err in switch");
                             }
+                            break;
                     }
                 }
             }
@@ -91,6 +98,12 @@ public class LibraryParser {
         } catch (IOException e) {
             System.out.println(e.getMessage() + " line read\n");
         }
+    }
+
+    public void getBookPos() {
+        readFile();
+        System.out.println("Current book id in parser is " + currentBookId);
+        libraryBooks.get(currentBookId - 1).getBookId();
     }
 
 //    public void getString() {

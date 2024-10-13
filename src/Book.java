@@ -58,6 +58,10 @@ public class Book {
         price = bookPrice;
     }
 
+    public void getBookId() {
+        System.out.println(bookId);
+    }
+
 
 //    private void toString {
 //
