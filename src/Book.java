@@ -1,6 +1,6 @@
 public class Book {
 
-    private short bookId;
+    private int thisId;
     private String title;
     private String author;
     private short year;
@@ -13,8 +13,8 @@ public class Book {
     private String[] awards;
     private short awardsCount = 0;
 
-    public Book(short id) {
-        bookId = id;
+    public Book(int id) {
+        thisId = id;
     }
 
     public void setTitle(String bookTitle) {
@@ -58,8 +58,12 @@ public class Book {
         price = bookPrice;
     }
 
-    public void getBookId() {
-        System.out.println(bookId);
+    public int getId() {
+        return thisId;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
 
