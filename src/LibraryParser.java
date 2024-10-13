@@ -13,20 +13,6 @@ public class LibraryParser {
     private int _currentBookId;
     private int _currentBookPos;
     ArrayList<Book> libraryBooks;
-    private static final String TAG_BOOK = "<book\\s+id=\"(\\d+)\">";
-    private static final String TAG_LIBRARY = "<library>";
-    private static final String TAG_TITLE = "<title>";
-    private static final String TAG_AUTHOR = "<author>";
-    private static final String TAG_YEAR = "<year>";
-    private static final String TAG_GENRE = "<genre>";
-    private static final String TAG_PRICE = "<price\\s+currency=\"([A-Z]+)\">";
-    private static final String TAG_ISBN = "<isbn>";
-    private static final String TAG_FORMAT = "<format>";
-    private static final String TAG_AWARDS = "<awards>";
-    private static final String TAG_AWARD = "<award>";
-    private static final String TAG_LANG = "<language>";
-    private static final String TAG_CLOSE = "</[a-zA-Z]+>";
-    private static final String TAG_HEADER = "<\\?.+\\?>";
 
     public LibraryParser(String fileName) {
         try {
@@ -54,20 +40,20 @@ public class LibraryParser {
                     }
                     output.append((char) symbol);
                     String tag = output.toString();
-                    System.out.println(tag);
+//                    System.out.println(tag);
                     output.setLength(0);
 
 
-                    if (Pattern.matches(TAG_BOOK, tag)) {
-                        Matcher matcher = Pattern.compile(TAG_BOOK).matcher(tag);
+                    if (Pattern.matches(Tags.TAG_BOOK, tag)) {
+                        Matcher matcher = Pattern.compile(Tags.TAG_BOOK).matcher(tag);
                         if (matcher.find()) {
                             _currentBookId = Short.parseShort(matcher.group(1));
                             _currentBookPos = _currentBookId - 1;
                             libraryBooks.add(new Book(_currentBookId));
                         }
 
-                    } else if (Pattern.matches(TAG_CLOSE, tag) || Pattern.matches(TAG_HEADER, tag)) {
-                        System.out.println("Closing tag found");
+                    } else if (Pattern.matches(Tags.TAG_CLOSE, tag) || Pattern.matches(Tags.TAG_HEADER, tag)) {
+//                        System.out.println("Closing tag found");
 
                     } else {
 
@@ -93,39 +79,58 @@ public class LibraryParser {
     private void handleTagContent(String tag, String tagContent) {
         switch (tag) {
 
-            case TAG_TITLE:
+            case Tags.TAG_TITLE:
                 libraryBooks.get((_currentBookPos)).setTitle(tagContent);
                 break;
-            case TAG_AUTHOR:
-                libraryBooks.get((_currentBookPos)).setTitle(tagContent);
-            case TAG_YEAR:
-            case TAG_GENRE:
-            case TAG_PRICE:
-            case TAG_ISBN:
-            case TAG_FORMAT:
-            case TAG_LIBRARY:
-            case TAG_AWARDS:
-            case TAG_AWARD:
-            case TAG_LANG:
+            case Tags.TAG_AUTHOR:
+                libraryBooks.get((_currentBookPos)).setAuthor(tagContent);
+                break;
+            case Tags.TAG_YEAR:
+                libraryBooks.get((_currentBookPos)).setYear(Integer.parseInt(tagContent));
+                break;
+            case Tags.TAG_GENRE:
+                libraryBooks.get((_currentBookPos)).setGenre(tagContent);
+                break;
+            case Tags.TAG_PRICE:
+                libraryBooks.get((_currentBookPos)).setPrice(Integer.parseInt(tagContent));
+                break;
+            case Tags.TAG_ISBN:
+                libraryBooks.get((_currentBookPos)).setIsbn(tagContent);
+                break;
+            case Tags.TAG_FORMAT:
+                libraryBooks.get((_currentBookPos)).setFormat(tagContent);
+                break;
+            case Tags.TAG_AWARDS:
+                libraryBooks.get((_currentBookPos)).setAwardsArray();
+                break;
+            case Tags.TAG_AWARD:
+                libraryBooks.get((_currentBookPos)).setAward(tagContent);
+                break;
+            case Tags.TAG_LANG:
+                libraryBooks.get((_currentBookPos)).setLanguage(tagContent);
+                break;
+            case Tags.TAG_LIBRARY:
+                System.out.println("Library found!");
                 break;
             default:
-                if (Pattern.matches(TAG_PRICE, tag)) {
-                    Matcher matcher = Pattern.compile(TAG_PRICE).matcher(tag);
+                if (Pattern.matches(Tags.TAG_PRICE, tag)) {
+                    Matcher matcher = Pattern.compile(Tags.TAG_PRICE).matcher(tag);
                     if (matcher.find()) {
                         if (_currentBookPos >= 0)
                             libraryBooks.get(_currentBookPos).setPriceCurrency(matcher.group(1));
                         else System.out.println("No books in library!");
                     }
                 } else
-                    System.out.println("Error in tag handle!");
+                    System.out.println("Library not found!");
                 break;
         }
     }
 
-    public void getBookPos() {
+    public void examineBooks() {
         readFile();
-        System.out.println("Current book id in parser is " + libraryBooks.get(_currentBookPos).getId());
-        System.out.println("Title is " + (libraryBooks.get(_currentBookPos).getTitle()));
+        for (int i = 0; i < _currentBookId; i++) {
+            libraryBooks.get(i).getFullInfo();
+        }
 
     }
 }

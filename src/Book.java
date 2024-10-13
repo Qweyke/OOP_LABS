@@ -1,17 +1,19 @@
+import java.util.ArrayList;
+
 public class Book {
 
     private int thisId;
     private String title;
     private String author;
-    private short year;
+    private int year;
     private String genre;
     private String priceCurrency;
-    private short price;
+    private int price;
     private String isbn;
     private String format;
     private String language;
-    private String[] awards;
-    private short awardsCount = 0;
+    private ArrayList<String> awards;
+
 
     public Book(int id) {
         thisId = id;
@@ -41,20 +43,23 @@ public class Book {
         format = bookFormat;
     }
 
-    public void setYear(short bookYear) {
+    public void setYear(int bookYear) {
         year = bookYear;
     }
 
+    public void setAwardsArray() {
+        awards = new ArrayList<>();
+    }
+
     public void setAward(String bookAward) {
-        awards[awardsCount] = bookAward;
-        awardsCount++;
+        awards.add(bookAward);
     }
 
     public void setPriceCurrency(String bookPriceCurrency) {
         priceCurrency = bookPriceCurrency;
     }
 
-    public void setPrice(short bookPrice) {
+    public void setPrice(int bookPrice) {
         price = bookPrice;
     }
 
@@ -66,7 +71,29 @@ public class Book {
         return title;
     }
 
+    public void getFullInfo() {
+        System.out.println("\nBook[" + thisId + "] \"" + title + "\":");
+        if (author != null) System.out.println("Author - " + author);
+        if (year != 0) System.out.println("Year - " + year);
+        if (genre != null) System.out.println("Genre - " + genre);
+        if (price != 0 && (priceCurrency != null)) System.out.println("Price - " + price + priceCurrency);
+        if (isbn != null) System.out.println("Isbn - " + isbn);
+        if (format != null) System.out.println("Format - " + format);
 
+        if (awards != null) {
+            System.out.print("Awards - ");
+            for (String award : awards) {
+                if (awards.size() == 1) {
+                    System.out.println(award);
+                    break;
+                }
+                System.out.println(award + ", ");
+            }
+        }
+        if (language != null) System.out.println("Language - " + language);
+
+
+    }
 //    private void toString {
 //
 //    }
