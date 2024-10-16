@@ -2,22 +2,17 @@ import java.util.ArrayList;
 
 public class Book {
 
-    private final int thisId;
+    //    private final int thisId;
     private String title;
     private String author;
     private int year;
     private String genre;
     private String priceCurrency;
-    private int price;
+    private double price;
     private String isbn;
     private String format;
     private String language;
     private ArrayList<String> awards;
-
-
-    public Book(int id) {
-        thisId = id;
-    }
 
     public void setTitle(String bookTitle) {
         title = bookTitle;
@@ -59,12 +54,12 @@ public class Book {
         priceCurrency = bookPriceCurrency;
     }
 
-    public void setPrice(int bookPrice) {
+    public void setPrice(double bookPrice) {
         price = bookPrice;
     }
 
     public void getFullInfo() {
-        System.out.println("\nBook[" + thisId + "] \"" + title + "\":");
+        System.out.println("\nBook\"" + title + "\":");
         if (author != null) System.out.println("Author - " + author);
         if (year != 0) System.out.println("Year - " + year);
         if (genre != null) System.out.println("Genre - " + genre);
@@ -84,6 +79,28 @@ public class Book {
         }
         if (language != null) System.out.println("Language - " + language);
 
+    }
 
+    public String getStringFullInfo() {
+        StringBuilder info = new StringBuilder("Book \"" + title + "\": ");
+
+        if (author != null) info.append("Author - ").append(author).append(", ");
+        if (year != 0) info.append("Year - ").append(year).append(", ");
+        if (genre != null) info.append("Genre - ").append(genre).append(", ");
+        if (price != 0 && priceCurrency != null)
+            info.append("Price - ").append(price).append(" ").append(priceCurrency).append(", ");
+        if (isbn != null) info.append("ISBN - ").append(isbn).append(", ");
+        if (format != null) info.append("Format - ").append(format).append(", ");
+
+        if (awards != null && !awards.isEmpty()) {
+            info.append("Awards - ").append(String.join(", ", awards)).append(", ");
+        }
+        if (language != null) info.append("Language - ").append(language);
+
+        if (info.charAt(info.length() - 2) == ',' && info.charAt(info.length() - 1) == ' ') {
+            info.setLength(info.length() - 2);
+        }
+
+        return info.toString();
     }
 }
