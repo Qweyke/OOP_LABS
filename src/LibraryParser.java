@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -8,63 +7,61 @@ import java.util.regex.Matcher;
 public class LibraryParser {
     private static BufferedReader libReader;
     private static int _currentBookId;
-
     private static Library userLibrary;
 
 
     public static void readFile(String fileName, Library library) {
-
-        try {
-            libReader = new BufferedReader(new FileReader(fileName));
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
-        StringBuilder output = new StringBuilder();
         userLibrary = library;
+        if ((userLibrary) == null) throw new IllegalArgumentException("Null pointer lib");
 
-        int symbol;
-
-        try {
-            while ((symbol = libReader.read()) != -1) {
-
-                if (symbol == '<') {
-
-                    while (symbol != '>') {
-                        output.append((char) symbol);
-                        symbol = libReader.read();
-                    }
-                    output.append((char) symbol);
-                    String tag = output.toString();
-                    output.setLength(0);
-//                    System.out.println("Processing tag: " + tag);
-
-                    if (tag.startsWith("<book")) {
-                        Matcher matcher = Tags.PATTERN_BOOK.matcher(tag);
-                        if (matcher.find()) {
-                            _currentBookId = Integer.parseInt(matcher.group(1));
-                            library.addBook(new Book(), _currentBookId);
-                        }
-                    } else if (tag.startsWith("</") || tag.startsWith("<?")) {
-
-                    } else {
-
-                        libReader.mark(1);
-                        while ((symbol = libReader.read()) != '<') {
-
-                            libReader.mark(1);
-                            output.append((char) symbol);
-                        }
-                        libReader.reset();
-                        String tagContent = output.toString();
-                        output.setLength(0);
-
-                        handleTagContent(tag, tagContent);
-                    }
-                }
-            }
+        try (BufferedReader libReader = new BufferedReader(new FileReader(fileName))) {
+            String libLine;
+            while ((libLine = libReader.readLine()) != null) processLibLine(libLine);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+        if ((userLibrary = library) == null) System.out.println("Null pointer lib");
+    }
+
+    private static void processLibLine(String line) {
+
+        if (line.startsWith("<?") || line.isEmpty()) return;
+
+        StringBuilder tagBuilder = new StringBuilder();
+        StringBuilder contentBuilder = new StringBuilder();
+
+        boolean tagOpened = false;
+        for (char symbol : line.toCharArray())
+            if (symbol == '<') {
+                tagOpened = true;
+                if (!tagBuilder.toString().isEmpty()) {
+                    processTagContent(tagBuilder.toString(), contentBuilder.toString());
+                    tagBuilder.setLength(0);
+                    contentBuilder.setLength(0);
+                }
+                tagBuilder.append(symbol);
+            } else if (symbol == '>') {
+                tagOpened = false;
+
+                tagBuilder.append(symbol);
+            } else if (tagOpened) {
+                tagBuilder.append(symbol);
+            } else contentBuilder.append(symbol);
+    }
+
+    private static void processTagContent(String tag, String tagContent) {
+
+//        System.out.println("Processing tag: " + tag);
+//        System.out.println("Processing tag content" + tagContent);
+
+        if (tag.startsWith("<book")) {
+            Matcher matcher = Tags.PATTERN_BOOK.matcher(tag);
+            if (matcher.find()) {
+                _currentBookId = Integer.parseInt(matcher.group(1));
+                userLibrary.addBook(new Book(), _currentBookId);
+            }
+        } else if (!tag.startsWith("</")) {
+            handleTagContent(tag, tagContent);
         }
     }
 
