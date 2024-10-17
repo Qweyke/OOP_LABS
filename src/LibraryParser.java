@@ -8,11 +8,11 @@ public class LibraryParser {
     private static Library userLibrary;
 
 
-    public static void readFile(String fileName, Library library) {
+    public static void readFile(String xmlPath, Library library) {
         userLibrary = library;
         if ((userLibrary) == null) throw new IllegalArgumentException("Null pointer lib");
 
-        try (BufferedReader libReader = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader libReader = new BufferedReader(new FileReader(xmlPath))) {
             String libLine;
             while ((libLine = libReader.readLine()) != null) processLibLine(libLine);
         } catch (IOException e) {

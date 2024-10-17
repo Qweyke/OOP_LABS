@@ -14,8 +14,7 @@ public class Tags {
     public static final String TAG_LANG = "language";
     public static final String TAG_PRICE = "price currency=";
     public static final String TAG_BOOK = "book id=";
-    //    public static final Pattern PATTERN_CLOSE = Pattern.compile("/[a-zA-Z]+");
-//    public static final Pattern PATTERN_HEADER = Pattern.compile("\\?.+\\?\\s*");
     public static final Pattern PATTERN_PRICE = Pattern.compile("price\\s+currency=\"([A-Z]+)\"");
     public static final Pattern PATTERN_BOOK = Pattern.compile("book\\s+id=\"(\\d+)\"");
+
 }
