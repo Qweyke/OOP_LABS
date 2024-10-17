@@ -16,10 +16,6 @@ public class Library {
         return books.get(bookId);
     }
 
-    public int getBookCount() {
-        return books.size();
-    }
-
     public String getBookInfo(int bookId) {
         return books.get(bookId).getStringFullInfo();
     }

@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public class Book {
 
-    //    private final int thisId;
     private String title;
     private String author;
     private int year;

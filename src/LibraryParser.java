@@ -51,9 +51,6 @@ public class LibraryParser {
 
     private static void processTagContent(String tag, String tagContent) {
 
-//        System.out.println("Processing tag: " + tag);
-//        System.out.println("Processing tag content" + tagContent);
-
         if (tag.startsWith("<book")) {
             Matcher matcher = Tags.PATTERN_BOOK.matcher(tag);
             if (matcher.find()) {
