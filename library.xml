@@ -1,0 +1,2 @@
+<?xml version='1.0' encoding='utf-8'?>
+<library><book id="1"><title>Clean Code</title><author>Isaac Asimov</author><year>2008</year><genre>Non-Fiction</genre><price currency="USD">87.25</price><isbn>978-4-952854365</isbn><format>Ebook</format><awards><award>Best Seller</award></awards></book><book id="2"><title>Foundation</title><author>Isaac Asimov</author><year>1992</year><genre>Non-Fiction</genre><price currency="USD">39.08</price><isbn>978-5-346941711</isbn><language>English</language></book></library>

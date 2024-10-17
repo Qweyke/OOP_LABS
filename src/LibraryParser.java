@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 
 public class LibraryParser {
-    private static BufferedReader libReader;
     private static int _currentBookId;
     private static Library userLibrary;
 
@@ -19,7 +18,6 @@ public class LibraryParser {
         } catch (IOException e) {
             System.out.println("Error reading file: " + e.getMessage());
         }
-        if ((userLibrary = library) == null) System.out.println("Null pointer lib");
     }
 
     private static void processLibLine(String line) {
@@ -38,11 +36,8 @@ public class LibraryParser {
                     tagBuilder.setLength(0);
                     contentBuilder.setLength(0);
                 }
-                tagBuilder.append(symbol);
             } else if (symbol == '>') {
                 tagOpened = false;
-
-                tagBuilder.append(symbol);
             } else if (tagOpened) {
                 tagBuilder.append(symbol);
             } else contentBuilder.append(symbol);
@@ -50,13 +45,13 @@ public class LibraryParser {
 
     private static void processTagContent(String tag, String tagContent) {
 
-        if (tag.startsWith("<book")) {
+        if (tag.startsWith("book")) {
             Matcher matcher = Tags.PATTERN_BOOK.matcher(tag);
             if (matcher.find()) {
                 _currentBookId = Integer.parseInt(matcher.group(1));
                 userLibrary.addBook(new Book(), _currentBookId);
             }
-        } else if (!tag.startsWith("</")) {
+        } else if (!tag.startsWith("/")) {
             handleTagContent(tag, tagContent);
         }
     }
@@ -96,7 +91,7 @@ public class LibraryParser {
                 break;
             default:
 
-                if (tag.startsWith("<price")) {
+                if (tag.startsWith("price")) {
                     Matcher matcher = Tags.PATTERN_PRICE.matcher(tag);
                     if (_currentBookId >= 1 && matcher.find()) {
                         userLibrary.getBook((_currentBookId)).setPriceCurrency(matcher.group(1));

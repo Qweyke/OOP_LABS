@@ -1,71 +1,50 @@
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Stack;
 
 public class LibraryGenerator {
-    private static int BOOK_TAGS = 11;
-    private static Stack<String> tagStack;
     private static PrintWriter xmlWriter;
 
     public static void generateXml(Library lib) {
-        tagStack = new Stack<>();
-        tagStack.add("</library>");
 
         try {
             xmlWriter = new PrintWriter("library.xml");
-        } catch (IOException e) {
-            System.out.println(e);
-        }
 
-        xmlWriter.println("<?xml version='1.0' encoding='utf-8'?>");
-        xmlWriter.print("<library>");
+            xmlWriter.println("<?xml version='1.0' encoding='utf-8'?>");
+            xmlWriter.print("<library>");
 
-        for (int i = 1; i <= lib.getBookCount(); i++) {
-            fillStack(lib.getBook(i));
-        }
-    }
-
-    private static void fillTags(Book currBook) {
-        for (int i = 0; i < BOOK_TAGS; i++) {
-            if (currBook.getTitle() != null)
-                xmlWriter.print(Tags.TAG_TITLE + currBook.getTitle() + tagStack.pop());
-            if (currBook.getAuthor() != null)
-                xmlWriter.print(Tags.TAG_AUTHOR + currBook.getAuthor() + tagStack.pop());
-            if (currBook.getYear() != null)
-                xmlWriter.print(Tags.TAG_YEAR + currBook.getYear() + tagStack.pop());
-            if (currBook.getGenre() != null)
-                xmlWriter.print(Tags.TAG_GENRE + currBook.getGenre() + tagStack.pop());
-            if ((currBook.getPrice() != null) && currBook.getPriceCurrency() != null)
-                xmlWriter.print(Tags.TAG_PRICE + "\"" + "\"" + currBook.getPriceCurrency() + tagStack.pop());
-            if (currBook.getIsbn() != null) xmlWriter.print(Tags.TAG_ISBN + currBook.getIsbn() + tagStack.pop());
-            if (currBook.getFormat() != null) xmlWriter.print(Tags.TAG_FORMAT + currBook.getFormat() + tagStack.pop());
-            if (currBook.getLanguage() != null)
-                xmlWriter.print(Tags.TAG_LIBRARY + currBook.getLanguage() + tagStack.pop());
-
-
-        }
-
-    }
-
-    private static void fillStack(Book currBook) {
-        for (int i = 0; i < BOOK_TAGS; i++) {
-            tagStack.add("</book>");
-            if (currBook.getAwardsCount() != 0) {
-                tagStack.add("</awards>");
-                for (int j = 0; j < currBook.getAwardsCount(); j++) {
-                    tagStack.add("</award>");
-                }
-                if (currBook.getLanguage() != null) tagStack.add("</language>");
-                if (currBook.getFormat() != null) tagStack.add("</format>");
-                if (currBook.getIsbn() != null) tagStack.add("</isbn>");
-                if ((currBook.getPrice() != null) && currBook.getPriceCurrency() != null) tagStack.add("</price>");
-                if (currBook.getGenre() != null) tagStack.add("</genre>");
-                if (currBook.getYear() != null) tagStack.add("</year>");
-                if (currBook.getAuthor() != null) tagStack.add("</author>");
-                if (currBook.getTitle() != null) tagStack.add("</title>");
+            for (int i = 1; i <= lib.getBookCount(); i++) {
+                xmlWriter.printf("<%s\"%d\">", Tags.TAG_BOOK, i);
+                handleBook(lib.getBook(i));
+                xmlWriter.write("</book>");
             }
+            xmlWriter.print("</library>");
+        } catch (IOException e) {
+            System.out.println("Error writing to file: " + e.getMessage());
+        } finally {
+            if (xmlWriter != null) xmlWriter.close();
+        }
+    }
 
+    private static void handleTag(String tagName, String tagContent) {
+        if (tagName != null && tagContent != null)
+            xmlWriter.printf("<%s>%s</%s>", tagName, tagContent, tagName);
+    }
 
+    private static void handleBook(Book currBook) {
+        handleTag(Tags.TAG_TITLE, currBook.getTitle());
+        handleTag(Tags.TAG_AUTHOR, currBook.getAuthor());
+        if (currBook.getYear() != null) handleTag(Tags.TAG_YEAR, currBook.getYear().toString());
+        handleTag(Tags.TAG_GENRE, currBook.getGenre());
+        if ((currBook.getPrice() != null) && currBook.getPriceCurrency() != null)
+            xmlWriter.printf("<%s\"%s\">%s</price>", Tags.TAG_PRICE, currBook.getPriceCurrency(), currBook.getPrice());
+        handleTag(Tags.TAG_ISBN, currBook.getIsbn());
+        handleTag(Tags.TAG_LANG, currBook.getLanguage());
+        handleTag(Tags.TAG_FORMAT, currBook.getFormat());
+        if (currBook.getAwardsCount() != 0) {
+            xmlWriter.printf("<%s>", Tags.TAG_AWARDS);
+            for (int j = 0; j < currBook.getAwardsCount(); j++)
+                handleTag(Tags.TAG_AWARD, currBook.getAward(j));
+            xmlWriter.printf("</%s>", Tags.TAG_AWARDS);
         }
     }
 }
