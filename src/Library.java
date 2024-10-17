@@ -20,6 +20,10 @@ public class Library {
         return books.get(bookId).getStringFullInfo();
     }
 
+    public int getBookCount() {
+        return books.size();
+    }
+
     public void getAllBookInfo() {
         if (books.size() > 0) {
             StringBuilder libBuilder = new StringBuilder();

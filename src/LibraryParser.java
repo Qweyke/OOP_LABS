@@ -3,7 +3,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
 
-//java sucks :)
 public class LibraryParser {
     private static BufferedReader libReader;
     private static int _currentBookId;

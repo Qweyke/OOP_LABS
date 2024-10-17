@@ -12,6 +12,7 @@ public class Tags {
     public static final String TAG_AWARDS = "<awards>";
     public static final String TAG_AWARD = "<award>";
     public static final String TAG_LANG = "<language>";
+    public static final String TAG_PRICE = "price currency=";
     //    public static final Pattern PATTERN_CLOSE = Pattern.compile("</[a-zA-Z]+>");
 //    public static final Pattern PATTERN_HEADER = Pattern.compile("<<\\?.+\\?>\\s*");
     public static final Pattern PATTERN_PRICE = Pattern.compile("<price\\s+currency=\"([A-Z]+)\">");

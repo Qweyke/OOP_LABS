@@ -4,10 +4,10 @@ public class Book {
 
     private String title;
     private String author;
-    private int year;
+    private Integer year;
     private String genre;
     private String priceCurrency;
-    private double price;
+    private Double price;
     private String isbn;
     private String format;
     private String language;
@@ -55,6 +55,51 @@ public class Book {
 
     public void setPrice(double bookPrice) {
         price = bookPrice;
+    }
+
+    public String getTitle() {
+        return title != null ? title : null;
+    }
+
+    public String getAuthor() {
+        return author != null ? author : null;
+    }
+
+    public Integer getYear() {
+        return year != null ? year : null;
+    }
+
+    public String getGenre() {
+        return genre != null ? genre : null;
+    }
+
+    public String getPriceCurrency() {
+        return priceCurrency != null ? priceCurrency : null;
+    }
+
+    public Double getPrice() {
+        return price != null ? price : null;
+    }
+
+    public String getIsbn() {
+        return isbn != null ? isbn : null;
+    }
+
+    public String getFormat() {
+        return format != null ? format : null;
+    }
+
+    public String getLanguage() {
+        return language != null ? language : null;
+    }
+
+    public int getAwardsCount() {
+        return (((awards != null) && !awards.isEmpty()) ? awards.size() : 0);
+    }
+
+    public String getAward(int pos) {
+        if (pos >= 0 && awards.size() > pos) return awards.get(pos);
+        else return null;
     }
 
     public void getFullInfo() {
