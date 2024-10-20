@@ -1,13 +1,16 @@
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class LibraryGenerator {
     private static PrintWriter xmlWriter;
 
-    public static void generateXml(Library lib) {
-
+    public static Path generateXml(Library lib, String xmlName) {
+        Path path = Paths.get(xmlName);
         try {
-            xmlWriter = new PrintWriter("library.xml");
+
+            xmlWriter = new PrintWriter(xmlName);
 
             xmlWriter.println("<?xml version='1.0' encoding='utf-8'?>");
             xmlWriter.print("<library>");
@@ -18,11 +21,14 @@ public class LibraryGenerator {
                 xmlWriter.write("</book>");
             }
             xmlWriter.print("</library>");
+            System.out.println("XML created successfully at " + path.toAbsolutePath().normalize());
+
         } catch (IOException e) {
             System.out.println("Error writing to file: " + e.getMessage());
         } finally {
             if (xmlWriter != null) xmlWriter.close();
         }
+        return path;
     }
 
     private static void handleTag(String tagName, String tagContent) {
